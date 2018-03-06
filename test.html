@@ -9,7 +9,7 @@
     <script>
         StoragePool("test-container").then(function (container) {
             container.count().then(function (count) {
-                console.log("files: " + count);
+                console.log("file count: " + count);
             });
 
             container.list().then(function (list) {
@@ -36,8 +36,6 @@
                     });
                 }
             });
-        }).catch(function (err) {
-            console.log("Container Error: " + err);
         });
     </script>
     <div id="file"></div>
