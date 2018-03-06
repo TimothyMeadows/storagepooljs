@@ -7,6 +7,22 @@ var StoragePool = function (contianerName) {
             this.name = contianerName;
             this.version = version;
 
+            var count = this.count = function () {
+                return new Promise(function (resolve, reject) {
+                    var container = database.transaction([contianerName], "readonly")
+                        .objectStore(contianerName)
+                        .count();
+
+                    container.onsuccess = function (event) {
+                        resolve(container.result);
+                    };
+
+                    container.onerror = function (event) {
+                        reject(Error("Error getting count"));
+                    };
+                });
+            };
+
             var StorageBlob = this.StorageBlob = function (path) {
                 var write = this.write = function (value) {
                     return new Promise(function (resolve, reject) {
@@ -38,6 +54,38 @@ var StoragePool = function (contianerName) {
 
                         blob.onerror = function (event) {
                             reject(Error(`Error getting ${path}`));
+                        };
+                    });
+                };
+
+                var _delete = this.delete = function () {
+                    return new Promise(function (resolve, reject) {
+                        var blob = database.transaction([contianerName], "readwrite")
+                            .objectStore(contianerName)
+                            .delete(path);
+
+                        blob.onsuccess = function (event) {
+                            resolve();
+                        };
+
+                        blob.onerror = function (event) {
+                            reject(Error(`Error removing ${path}`));
+                        };
+                    });
+                };
+
+                var exists = this.exists = function () {
+                    return new Promise(function (resolve, reject) {
+                        var blob = database.transaction([contianerName], "readonly")
+                            .objectStore(contianerName)
+                            .getKey(path);
+
+                        blob.onsuccess = function (event) {
+                            resolve(blob.result == path);
+                        };
+
+                        blob.onerror = function (event) {
+                            reject(false);
                         };
                     });
                 };

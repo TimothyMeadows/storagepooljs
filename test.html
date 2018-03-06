@@ -7,16 +7,28 @@
 
 <body>
     <script>
-        StoragePool("test-container").then(function (Container) {
-            var blob = new Container.StorageBlob("/test/path/some-file.txt");
-            blob.write("This is test content for test.txt").then(function () {
-                blob.read().then(function (file) {
-                    document.getElementById("file").innerText = file;
-                }).catch(function (err) {
-                    console.log("Read Error: " + err);
-                });
-            }).catch(function (err) {
-                console.log("Write Error: " + err);
+        StoragePool("test-container").then(function (container) {
+            container.count().then(function (count) {
+                console.log("files: " + count);
+            });
+
+            var blob = new container.StorageBlob("/test/path/test.txt");
+            blob.exists().then(function (exists) {
+                if (exists) {
+                    blob.delete().then(function () {
+                        blob.write("This is the test contents of test.txt").then(function () {
+                            blob.read().then(function (file) {
+                                document.getElementById("file").innerText = file;
+                            });
+                        });
+                    });
+                } else {
+                    blob.write("This is the test contents of test.txt").then(function () {
+                        blob.read().then(function (file) {
+                            document.getElementById("file").innerText = file;
+                        });
+                    });
+                }
             });
         }).catch(function (err) {
             console.log("Container Error: " + err);
