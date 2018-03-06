@@ -4,7 +4,7 @@ This is a javascript library designed to run in all desktop, and mobile browsers
 
 This library is capable of large file storage in the browser. You can reach 500 MB in both desktop, and mobile browsers without any notices or warnings. Moving beyond 500 MB may result in a prompt from the browser to the user requesting if they will allow more space to be stored. Some mobile browsers will deny any attempt to store more than 1 GB of space reguardless of the users input.
 
-For now you can see below for a sample of how to use the library. You can also check test.html in the repository for a running sample. Documenting will be added in the future (tm).
+For now you can see below for a sample of how to use the library. You can also check test.html in the repository for a running sample. Documentation will be added in the future (tm).
 
 ```javascript
 StoragePool("test-container").then(function (container) {
