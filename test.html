@@ -25,6 +25,7 @@
                         blob.write("This is the test contents of test.txt").then(function () {
                             blob.read().then(function (file) {
                                 document.getElementById("file").innerText = file;
+                                console.log(file);
                             });
                         });
                     });
@@ -32,6 +33,7 @@
                     blob.write("This is the test contents of test.txt").then(function () {
                         blob.read().then(function (file) {
                             document.getElementById("file").innerText = file;
+                            console.log(file);
                         });
                     });
                 }

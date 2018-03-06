@@ -40,6 +40,15 @@ var StoragePool = function (contianerName) {
             };
 
             var StorageBlob = this.StorageBlob = function (path) {
+                if (!path)
+                    throw "Invalid path supplied!";
+
+                if (path.indexOf("/") == -1)
+                    path = "/" + path;
+
+                if (path.indexOf("\\") != -1)
+                    path = path.replace("\\", "/");
+
                 var write = this.write = function (value) {
                     return new Promise(function (resolve, reject) {
                         var blob = database.transaction([contianerName], "readwrite")
@@ -119,7 +128,6 @@ var StoragePool = function (contianerName) {
         };
 
         connection.onupgradeneeded = connection.onversionchange = function (event) {
-            // TODO: might beable to be be smarter about migrations, but for now just drop, and re-create.
             connection.result.deleteObjectStore(contianerName);
             connection.result.createObjectStore(contianerName);
         };
