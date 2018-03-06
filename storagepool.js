@@ -23,6 +23,22 @@ var StoragePool = function (contianerName) {
                 });
             };
 
+            var list = this.list = function () {
+                return new Promise(function (resolve, reject) {
+                    var container = database.transaction([contianerName], "readonly")
+                        .objectStore(contianerName)
+                        .getAllKeys();
+
+                    container.onsuccess = function (event) {
+                        resolve(container.result);
+                    };
+
+                    container.onerror = function (event) {
+                        reject(Error("Error getting count"));
+                    };
+                });
+            };
+
             var StorageBlob = this.StorageBlob = function (path) {
                 var write = this.write = function (value) {
                     return new Promise(function (resolve, reject) {

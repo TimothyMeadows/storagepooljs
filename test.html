@@ -12,6 +12,12 @@
                 console.log("files: " + count);
             });
 
+            container.list().then(function (list) {
+                for (var i = 0; i <= list.length - 1; i++) {
+                    console.log(i + ": " + list[i])
+                }
+            });
+
             var blob = new container.StorageBlob("/test/path/test.txt");
             blob.exists().then(function (exists) {
                 if (exists) {
