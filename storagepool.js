@@ -1,27 +1,63 @@
 var StoragePool = function (contianerName) {
-    if (!Promise)
-        throw "No Promise support, can't continue.";
-
     return new Promise(function (resolve, reject) {
-        var public = { IndexedDB: false, IDBTransaction: false };
         var indexedDB = window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
-        var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.OIDBTransaction || window.msIDBTransaction;
-        var version = public.version = 1.0;
+        var version = this.version = 3;
 
-        if (!indexedDB) {
-            reject(Error("IndexedDB support not found!"));
-            return;
-        } else public.IndexedDB = true;
+        var StorageContainer = function (contianerName, database) {
+            this.name = contianerName;
+            this.version = version;
 
-        if (!IDBTransaction) {
-            reject(Error("IDBTransaction support not found!"));
-            return;
-        } else public.IDBTransaction = true;
+            var StorageBlob = this.StorageBlob = function (path) {
+                var write = this.write = function (value) {
+                    return new Promise(function (resolve, reject) {
+                        var blob = database.transaction([contianerName], "readwrite")
+                            .objectStore(contianerName)
+                            .put(value, path);
+
+                        blob.onsuccess = function () {
+                            resolve();
+                        };
+
+                        blob.onerror = function (event) {
+                            reject(Error(`Error getting ${path}`));
+                        };
+                    });
+
+
+                };
+
+                var read = this.read = function () {
+                    return new Promise(function (resolve, reject) {
+                        var blob = database.transaction([contianerName], "readonly")
+                            .objectStore(contianerName)
+                            .get(path);
+
+                        blob.onsuccess = function (event) {
+                            resolve(blob.result);
+                        };
+
+                        blob.onerror = function (event) {
+                            reject(Error(`Error getting ${path}`));
+                        };
+                    });
+                };
+            };
+        };
 
         var connection = indexedDB.open(contianerName, version), database;
         connection.onsuccess = function (event) {
             database = connection.result;
-            resolve(public);
+            database.onerror = function (event) {
+                reject(Error("Error creating/accessing IndexedDB"));
+            };
+
+            resolve(new StorageContainer(contianerName, database));
+        };
+
+        connection.onupgradeneeded = connection.onversionchange = function (event) {
+            // TODO: might beable to be be smarter about migrations, but for now just drop, and re-create.
+            connection.result.deleteObjectStore(contianerName);
+            connection.result.createObjectStore(contianerName);
         };
     });
 };
