@@ -1,7 +1,7 @@
-var StoragePool = function (contianerName) {
+var StoragePool = function (contianerName, containerVersion) {
     return new Promise(function (resolve, reject) {
         var indexedDB = window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
-        var version = this.version = 3;
+        var version = this.version = containerVersion || 3;
 
         var StorageContainer = function (contianerName, database) {
             this.name = contianerName;
