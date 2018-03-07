@@ -34,7 +34,7 @@ var StoragePool = function (contianerName, containerVersion) {
                     };
 
                     container.onerror = function (event) {
-                        reject(Error("Error getting count"));
+                        reject(Error("Error getting list"));
                     };
                 });
             };
@@ -60,11 +60,39 @@ var StoragePool = function (contianerName, containerVersion) {
                         };
 
                         blob.onerror = function (event) {
-                            reject(Error(`Error getting ${path}`));
+                            reject(Error(`Error writting ${path}`));
                         };
                     });
 
 
+                };
+
+                var fetch = this.fetch = function (url) {
+                    return new Promise(function (resolve, reject) {
+                        var http = new XMLHttpRequest();
+                        http.open("GET", url, true);
+                        http.responseType = "blob";
+
+                        http.addEventListener("load", function () {
+                            if (http.status === 200) {
+                                var blob = database.transaction([contianerName], "readwrite")
+                                    .objectStore(contianerName)
+                                    .put(http.response, path);
+
+                                blob.onsuccess = function () {
+                                    resolve();
+                                };
+
+                                blob.onerror = function (event) {
+                                    reject(Error(`Error writting ${path}`));
+                                };
+                            } else {
+                                reject(Error(`Error fetching ${url}: ${http.status}`));
+                            }
+                        }, false);
+
+                        http.send();
+                    });
                 };
 
                 var read = this.read = function () {
@@ -78,7 +106,7 @@ var StoragePool = function (contianerName, containerVersion) {
                         };
 
                         blob.onerror = function (event) {
-                            reject(Error(`Error getting ${path}`));
+                            reject(Error(`Error reading ${path}`));
                         };
                     });
                 };

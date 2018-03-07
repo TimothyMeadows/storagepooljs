@@ -18,24 +18,40 @@
                 }
             });
 
-            var blob = new container.StorageBlob("/test/path/test.txt");
+            var blob = new container.StorageBlob("/test/path/test.png");
+            var fetch = function () {
+                blob.fetch("my-logo-black-small.png").then(function () {
+                    blob.read().then(function (file) {
+                        var url = window.URL || window.webkitURL;
+                        var source = url.createObjectURL(file);
+                        var test = document.createElement("img");
+                        test.setAttribute("src", source);
+
+                        document.getElementById("file").appendChild(test);
+                        url.revokeObjectURL(file);
+                        console.log(file);
+                    });
+                });
+            };
+
+            var write = function () {
+                blob.write("This is the test contents of test.txt").then(function () {
+                    blob.read().then(function (file) {
+                        document.getElementById("file").innerText = file;
+                        console.log(file);
+                    });
+                });
+            };
+
             blob.exists().then(function (exists) {
                 if (exists) {
                     blob.delete().then(function () {
-                        blob.write("This is the test contents of test.txt").then(function () {
-                            blob.read().then(function (file) {
-                                document.getElementById("file").innerText = file;
-                                console.log(file);
-                            });
-                        });
+                        // write();
+                        fetch();
                     });
                 } else {
-                    blob.write("This is the test contents of test.txt").then(function () {
-                        blob.read().then(function (file) {
-                            document.getElementById("file").innerText = file;
-                            console.log(file);
-                        });
-                    });
+                    // write();
+                    fetch();
                 }
             });
         });
