@@ -1,8 +1,8 @@
 # storagepool.js
 
-This is a javascript library designed to run in all desktop, and mobile browsers that can support the [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API). It functions much like most cloud based Storage API's that exist seperating data between containers, and blobs.
+This is a javascript library designed to run in all desktop, and mobile browsers that can support the [IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API). It functions much like most cloud based Storage API's that exist separating data between containers, and blobs.
 
-This library is capable of large file storage in the browser. You can reach 500 MB in both desktop, and mobile browsers without any notices or warnings. Moving beyond 500 MB may result in a prompt from the browser to the user requesting if they will allow more space to be stored. Some mobile browsers will deny any attempt to store more than 1 GB of space reguardless of the users input.
+This library is capable of large file storage in the browser. You can reach 500 MB in both desktop, and mobile browsers without any notices or warnings. Moving beyond 500 MB may result in a prompt from the browser to the user requesting if they will allow more space to be stored. Some mobile browsers will deny any attempt to store more than 1 GB of space regardless of the users input.
 
 ### StoragePool(contianerName:string, containerVersion:number):Promise
 
@@ -21,7 +21,7 @@ StoragePool("test-container").then(function (container) { /* ... */ });
 
 ### StorageContainer.count():Promise
 
-This method will return a count of all of the items in the storage container. This is an optimzied method rather than depending on StorageContainer.list().length.
+This method will return a count of all of the items in the storage container. This is an optimized method rather than depending on StorageContainer.list().length.
 
 #### Example
 ```javascript
@@ -63,7 +63,7 @@ StoragePool("test-container").then(function (container) {
 
 ### StorageBlob.write(value:*):Promise
 
-This will write the contents of value to the StorageBlob path. The contents can be anything however complex JavaScript objects should be pre-encoded in JSON before storage to prevent any issues or exposure of properties not ment to be public. Will return when write is complete.
+This will write the contents of value to the StorageBlob path. The contents can be anything however complex JavaScript objects should be pre-encoded in JSON before storage to prevent any issues or exposure of properties not meant to be public. Will return when write is complete.
 
 - *value:** <br/>
 This is the content of the StorageBlob you wish to write. It can be anything including a Buffer, Array, string, Blob etc..
